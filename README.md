@@ -39,3 +39,9 @@ Recent applications of the TTMD code:
   **"A comprehensive study of SARS-CoV-2 main protease (Mpro) inhibitor-resistant mutants selected in a VSV-based system"**
   F Costacurta et al. (preprint on BioRxiv)  
   https://doi.org/10.1101/2023.09.22.558628  
+  **"Structural Investigations on 2-Amidobenzimidazole Derivatives as New Inhibitors of Protein Kinase CK1 Delta"**
+  S. Calenda et al. (published in *Pharmaceuticals*)
+  https://doi.org/10.3390/ph17040468  
+  **"A second life for the crystallographic structure of Berenil-dodecanucleotide complex: a computational revisitation thirty years after its publication"**  
+  G. Novello et al. (preprint in *ResearchSquare*)  
+  https://doi.org/10.21203/rs.3.rs-4269844/v1  
