@@ -45,3 +45,6 @@ Recent applications of the TTMD code:
   **"A second life for the crystallographic structure of Berenil-dodecanucleotide complex: a computational revisitation thirty years after its publication"**  
   G. Novello et al. (preprint in *ResearchSquare*)  
   https://doi.org/10.21203/rs.3.rs-4269844/v1  
+  **"Molecular Glue-Design-Evaluator (MOLDE): An Advanced Method for In-Silico Molecular Glue Design"**  
+  A S Ben Geoffrey, Deepak Agrawal, Nagaraj M Kulkarni, G Manonmani (preprint in *Biorxiv*)  
+  https://doi.org/10.1101/2024.08.06.606937
