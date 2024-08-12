@@ -37,7 +37,7 @@ Recent applications of the TTMD code:
   A S Ben Geoffrey, Deepak Agrawal, Nagaraj M Kulkarni, Rajappan Vetrivel, Kishan Gurram  (published in *ACS Omega*)    
   https://doi.org/10.1021/acsomega.3c07318  
   **"A comprehensive study of SARS-CoV-2 main protease (Mpro) inhibitor-resistant mutants selected in a VSV-based system"**
-  F Costacurta et al. (preprint on BioRxiv)  
+  F Costacurta et al. (preprint in *BioRxiv*)  
   https://doi.org/10.1101/2023.09.22.558628  
   **"Structural Investigations on 2-Amidobenzimidazole Derivatives as New Inhibitors of Protein Kinase CK1 Delta"**
   S. Calenda et al. (published in *Pharmaceuticals*)
