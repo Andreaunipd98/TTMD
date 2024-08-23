@@ -1,7 +1,7 @@
 #defaults parameters
 method = rt
 receptor = nucleic.pdb
-ligand = peptide/protein.mol2
+ligand = protein.mol2
 padding = 20
 iso = no
 temp_ramp = [[300, 450, 10, 10]]
