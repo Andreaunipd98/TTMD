@@ -73,33 +73,31 @@ quit'''
 
 
 def wrap_blocks(first, last, topology, trajectory):
-
     u = mda.Universe(topology, trajectory)
     u.trajectory[first:last]
-
     ref = mda.Universe(topology)
     ref_dry = ref.select_atoms('not resname WAT and not resname Na+ and not resname NA and not resname Cl- and not resname CL')
-
+    
     try:
-        u.fragments()
-    except Exception:
+        u.fragments()  
+    except Exception: 
         u.atoms.guess_bonds()
-
+        
     system_dry = u.select_atoms('not resname WAT and not resname Na+ and not resname NA and not resname Cl- and not resname CL')
     solvent = u.select_atoms('resname WAT or resname Na+ or resname NA or resname Cl- or resname CL')
-
+    
     transforms = [trans.unwrap(u.atoms),
                 trans.center_in_box(system_dry, center='geometry', wrap=False),
                 trans.wrap(solvent, compound='residues'),
                 ]
     u.trajectory.add_transformations(*transforms)
-
+    
     block_name = f'block_{first}_{last}.dcd'
     with mda.Writer(block_name, u.atoms.n_atoms) as W:
         for ts in u.trajectory[first:last]:
-            old_rmsd, new_rmsd = align.alignto(u, ref, select='protein and backbone', weights='mass')
+            old_rmsd, new_rmsd = align.alignto(u, ref, select='nucleicbackbone', weights='mass') #adodaro
             W.write(u.atoms)
-
+            
     return block_name
 
 
