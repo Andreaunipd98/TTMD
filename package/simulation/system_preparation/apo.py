@@ -1,13 +1,9 @@
 import os
-from rdkit import Chem
 import MDAnalysis as mda
-
-
 
 class prepare:
     def __init__(self, dict):
         self.__dict__ = dict
-        
 
 
     def complex_in(self, ions_rand):
@@ -15,15 +11,13 @@ class prepare:
 source leaprc.DNA.OL15
 source leaprc.RNA.OL3
 source leaprc.water.tip3p
+source leaprc.gaff
 loadoff atomic_ions.lib
 loadamberparams frcmod.ionsjc_tip3p
-PROT = loadpdb {self.receptor}
-LIG = loadpdb ligand.pdb
-COMPL = combine{{PROT LIG}}
-saveAmberParm LIG ligand.prmtop ligand.inpcrd
-saveAmberParm PROT protein.prmtop protein.inpcrd
+REC = loadpdb {self.receptor}
+COMPL = combine{{REC}}
+saveAmberParm REC receptor.prmtop protein.inpcrd
 saveAmberParm COMPL complex.prmtop complex.inpcrd
-savepdb COMPL complex.pdb
 solvatebox COMPL TIP3PBOX {self.padding} {self._iso}
 {ions_rand}
 savepdb COMPL solv.pdb
@@ -36,10 +30,21 @@ quit'''
 
 
     def prepare(self):
-        self.complex_in('')
+        file_exists = False
+        try:
+            with open('solv.pdb', 'r') as f:
+                lines = f.readlines()
+            if lines != []:
+                file_exists = True
+        except Exception:
+            file_exists = False
 
-        with open("determine_ions_fixed.vmd", 'w') as f:
-            f.write("""set saltConcentration 0.154
+        if file_exists == False:
+
+            self.complex_in('')
+
+            with open("determine_ions_fixed.vmd", 'w') as f:
+                f.write("""set saltConcentration 0.154
 mol delete all
 mol load parm7 solv.prmtop pdb solv.pdb 
 set sel [atomselect top "water and noh"];
@@ -94,27 +99,6 @@ puts "The total charge of the system will be [expr $intcharge + $nCation - $nAni
 puts "\n";
 exit""")
 
-#        if not os.path.exists('ligand_charged.mol2'):
- #           os.system(f"antechamber -fi mol2 -i {self.ligand} -o ligand_charged.mol2 -fo mol2 -nc {self.ligand_charge} -c bcc -pf y -rn LIG")
-        
-  #      if not os.path.exists('ligand.frcmod'):
-   #         os.system("parmchk2 -i ligand_charged.mol2 -f mol2 -o ligand.frcmod")
-
-
-        #adodaro
-        if not os.path.exists('ligand.pdb'):
-            os.system("cp ../../ligand.pdb ligand.pdb")
-            
-        file_exists = False
-        try:
-            with open('solv.pdb', 'r') as f:
-                lines = f.readlines()
-            if lines != []:
-                file_exists = True
-        except Exception:
-            file_exists = False
-
-        if file_exists == False:    
             os.system("tleap -f complex.in")
 
             os.system(f"{self.vmd_path} -dispdev text -e determine_ions_fixed.vmd > ion.log")
@@ -137,10 +121,10 @@ exit""")
 
             with open("check_charge.vmd", 'w') as f:
                 f.write("""mol load parm7 solv.prmtop pdb solv.pdb
-        set all [atomselect top all]
-        set curr_charge [measure sumweights $all weight charge]
-        puts [format "\nCurrent system charge is: %.3f\n" $curr_charge]
-        exit""")
+set all [atomselect top all]
+set curr_charge [measure sumweights $all weight charge]
+puts [format "\nCurrent system charge is: %.3f\n" $curr_charge]
+exit""")
 
             os.system(f"{self.vmd_path} -dispdev text -e check_charge.vmd > charge.log")
 
@@ -153,9 +137,11 @@ exit""")
                     pass
                 else:
                     exit("Error: system charge is not 0!")
-        
+
+        receptor_top = os.path.abspath('receptor.prmtop')
         solvpdb = os.path.abspath('solv.pdb')
         solvprmtop = os.path.abspath('solv.prmtop')
+        
 
 
         u = mda.Universe(self.receptor)
@@ -166,13 +152,10 @@ exit""")
         dry_complex = f'''source leaprc.protein.ff14SB
 source leaprc.DNA.OL15
 source leaprc.RNA.OL3
-source leaprc.water.tip3p
 source leaprc.gaff
 loadoff atomic_ions.lib
-loadamberparams frcmod.ionsjc_tip3p
-PROT = loadpdb dry_protein.pdb
-LIG = loadpdb ligand.pdb
-COMPL = combine{{PROT LIG}}
+PROT = loadpdb {self.receptor}
+COMPL = combine{{PROT}}
 saveAmberParm COMPL dry_complex.prmtop dry_complex.inpcrd
 quit'''
 
@@ -182,8 +165,9 @@ quit'''
         os.system("tleap -f dry_complex.in")
 
         complprmtop = os.path.abspath('dry_complex.prmtop')
-        
+
         update = {
+            'receptor_top': receptor_top,
             'complprmtop': complprmtop,
             'solvpdb': solvpdb,
             'solvprmtop': solvprmtop

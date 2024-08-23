@@ -23,7 +23,8 @@ class equil2:
         if not os.path.exists('equil2.dcd') or check == False:
             out = self.output['eq1']
 
-            with open("equil2.npt", 'w') as f:
+            #adodaro 
+            with open("equil2.npt", 'w') as f: 
                 f.write(f"""parmfile {self.solvprmtop}
 coordinates {self.solvpdb}
 binCoordinates {out['coor']}
@@ -42,7 +43,7 @@ PME on
 cutoff 9.0
 switching on
 switchDistance 7.5
-atomRestraint "protein and backbone or resname LIG" setpoints 5@0
+atomRestraint "(nucleic and backbone) or (protein and backbone)" setpoints 5@0
 trajectoryFile equil2.dcd
 trajectoryPeriod {self.dcdfreq}""")
 

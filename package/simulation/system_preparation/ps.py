@@ -8,6 +8,8 @@ class prepare:
 
     def complex_in(self, ions_rand):
         complexin = f'''source leaprc.protein.ff14SB
+source leaprc.DNA.OL15
+source leaprc.RNA.OL3
 source leaprc.water.tip3p
 source leaprc.gaff
 loadoff atomic_ions.lib
@@ -146,16 +148,22 @@ exit""")
 
 
         u = mda.Universe(self.receptor)
-        sel = u.select_atoms('protein')
-        with mda.Writer('dry_protein.pdb', sel.n_atoms) as W:
+        sel = u.select_atoms('nucleic') #adodaro
+        with mda.Writer('dry_receptor.pdb', sel.n_atoms) as W:
             W.write(sel)
 
+        u = mda.Universe(self.ligand)
+        sel = u.select_atoms('protein') #adodaro
+        with mda.Writer('dry_ligand.pdb', sel.n_atoms) as W:
+            W.write(sel)
+            
         dry_complex = f'''source leaprc.protein.ff14SB
+source leaprc.DNA.OL15
+source leaprc.RNA.OL3
 source leaprc.gaff
-loadamberparams ligand.frcmod
 loadoff atomic_ions.lib
-PROT = loadpdb {self.receptor}
-LIG = loadpdb {self.ligand}
+PROT = loadpdb dry_receptor.pdb
+LIG = loadpdb dry_ligand.pdb
 COMPL = combine{{PROT LIG}}
 saveAmberParm COMPL dry_complex.prmtop dry_complex.inpcrd
 quit'''
@@ -176,3 +184,8 @@ quit'''
             }
 
         return update
+        
+        
+def printdict(obj):
+    for i in obj.__dict__:
+        print(f'{i} = {obj.__dict__[i]}')

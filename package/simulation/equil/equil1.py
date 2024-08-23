@@ -39,9 +39,9 @@ class equil1:
                 for line in lines:
                     if line.startswith('celldimension '):
                         dimension = str(line.split(' ')[1]) + ' ' + str(line.split(' ')[2]) + ' ' + str(line.split(' ')[3].rstrip('\n'))
+              
                         
-                        
-            
+            #adodaro                    
             with open("equil1.nvt", 'w') as f:
                 f.write(f"""parmfile {self.solvprmtop}
 coordinates {self.solvpdb}
@@ -57,7 +57,7 @@ PME on
 cutoff 9.0
 switching on
 switchDistance 7.5
-atomRestraint "protein or resname LIG" setpoints 5@0
+atomRestraint "nucleic or protein" setpoints 5@0
 trajectoryFile equil1.dcd
 trajectoryPeriod {self.dcdfreq}
 boxSize {dimension}""")

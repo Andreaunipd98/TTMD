@@ -68,22 +68,45 @@ class graphs:
         spl1 = make_interp_spline(x, y1, k=5)
         power_smooth1 = spl1(xnew)
 
-        axs[1].plot(xnew, power_smooth1, color=self.colors[0], label='Backbone')
+        axs[1].plot(xnew, power_smooth1, color=self.colors[0], label='backbone')
 
 
         y2 = self.rmsd[1]
-        spl2 = make_interp_spline(x, y2, k=5)
-        power_smooth2 = spl2(xnew)
+        ################# gnovello
+        xnew = np.linspace(x[0], x[-1], smooth)
+        if len(x) > 0 and len(y2) > 0:
+            y2 = np.array(y2)
+            y2 = y2[~np.isinf(y2) & ~np.isnan(y2)]
+            if len(x[:len(y2)]) > 0:
+                spl2 = make_interp_spline(x[:len(y2)], y2, k=5)
+                power_smooth2 = spl2(xnew)
+                axs[1].plot(xnew, power_smooth2, color=self.colors[1], label='Ligand')
+        #y2 = np.array(y2) #gnovello
+        #y2 = y2[~np.isinf(y2) & ~np.isnan(y2)] #gnovello
+        #spl2 = make_interp_spline(x[:len(y2)], y2, k=5) #gnovello
+        #spl2 = make_interp_spline(x, y2, k=5)
+        #power_smooth2 = spl2(xnew)
 
-        axs[1].plot(xnew, power_smooth2, color=self.colors[1], label='Ligand')
+        #axs[1].plot(xnew, power_smooth2, color=self.colors[1], label='Ligand')
         
         if self.bsite != 'None':
             y3 = self.bsite
-            spl3 = make_interp_spline(x, y3, k=5)
-            power_smooth3 = spl3(xnew)
-
-            axs[1].plot(xnew, power_smooth3, color=self.colors[2], label='BSite backbone')
-
+            ################################## gnovello
+            
+            #y3 = np.array(y3) #gnovello
+            #y3 = y3[~np.isinf(y3) & ~np.isnan(y3)]#gnovello
+            #spl3 = make_interp_spline(x[:len(y3)], y3, k=5) #gnovello
+            #spl3 = make_interp_spline(x, y3, k=5)
+            #power_smooth3 = spl3(xnew)
+            #axs[1].plot(xnew, power_smooth3, color=self.colors[2], label='BSite')
+            if len(x) > 0 and len(y3) > 0:
+                y3 = np.array(y3)
+                y3 = y3[~np.isinf(y3) & ~np.isnan(y3)]
+                if len(x[:len(y3)]) > 0:
+                    spl3 = make_interp_spline(x[:len(y3)], y3, k=5)
+                    power_smooth3 = spl3(xnew)
+                    axs[1].plot(xnew, power_smooth3, color=self.colors[2], label='BSite')
+                
         axs[1].set_ylabel('RMSD (Å)')
         axs[1].set_xlabel('Time (ns)')
         axs[1].set_title('RMSD')
@@ -128,7 +151,7 @@ class graphs:
 
 def calcRMSD(topology, trajectory):
     u = mda.Universe(topology, trajectory)
-    R = rms.RMSD(u, u, select='backbone', groupselections=['resname LIG'], ref_frame=0).run()
+    R = rms.RMSD(u, u, select='nucleicbackbone', groupselections=['backbone'], ref_frame=0).run() #adodaro
     rmsd_backbone = R.results.rmsd.T[2]
     rmsd_ligand = R.results.rmsd.T[3]
     return rmsd_backbone, rmsd_ligand
@@ -149,8 +172,8 @@ def bsite_rmsd(rmsd_resids, topology, done_temp, stop_range):
                 selection += f'resid {r} or '
 
         n = int(len(u.trajectory)*stop_range/100)
-
-        R = rms.RMSD(u, u, select=f'backbone and ({selection})', ref_frame=0).run()
+        
+        R = rms.RMSD(u, u, select=f'nucleicbackbone and ({selection})', ref_frame=0).run() #adodaro nucleicbackbone and {selection}
         rmsd = list(R.results.rmsd.T[2])
         plain_rmsd.extend(rmsd)
 
