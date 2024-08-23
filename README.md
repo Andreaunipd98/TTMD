@@ -23,7 +23,7 @@ System setup and parameterization for molecular dynamics is carried out by Amber
 
 N.B. be sure to run the code with at least one Nvidia GPU device.
 
-To run a TTMD simulation on a protein-ligand complex of interest, create a folder containing the TTMD.py script plus the adequately prepared protein and ligand structures in the .pdb and .mol2 format respectively. **Editable settings can be provided either through the command line or a configuration file (this option overrides command line arguments)**. 
+To run a TTMD simulation on a nucleic-peptide/protein complex of interest, create a folder containing the TTMD.py script plus the adequately prepared nucleic structure in the .pdb format and the peptide/protein in both .pdb and .mol2 format. **Editable settings can be provided either through the command line or a configuration file (this option overrides command line arguments)**. 
 To run the code:
 1. open a terminal within the directory of interest
 2. activate the right conda environment (`conda activate ttmd`)
